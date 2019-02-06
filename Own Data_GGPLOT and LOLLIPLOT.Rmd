@@ -1,0 +1,183 @@
+```{r}
+link="https://raw.githubusercontent.com/jwhite00/VisualAnalytics_2_tabularData/master/Education%2070s%20to%2016.csv"
+
+```
+
+```{r}
+mydata=read.csv(link)
+```
+```{r}
+names(mydata)
+```
+```{r}
+mydata
+
+```
+
+```{r}
+str(mydata)
+```
+```{r}
+head(mydata$Region, 300)
+
+```
+
+```{r}
+absoluteT=table(mydata$Region,exclude = 'nothing')
+prop.table(absoluteT)
+```
+
+```{r}
+ToPlot=prop.table(absoluteT)
+ToPlot=ToPlot*100
+tableFreq=as.data.frame(ToPlot)
+names(tableFreq)=c("Region","Pct")
+#you have:
+tableFreq
+
+```
+```{r}
+library(ggplot2)
+
+```
+
+```{r}
+base= ggplot(data = tableFreq, 
+             aes(x = Region,
+                 y = Pct)) 
+```
+
+```{r}
+plot1 = base + geom_bar(fill ="yellow",
+                        stat = 'identity') # y is just what it is!
+plot1
+```
+
+```{r}
+titleText="Percentage distribution by regions of the USA"
+sourceText="Survey Data"
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+plot2
+```
+
+```{r}
+plot3 = plot2 + geom_hline(yintercept = 50, #where
+                           linetype="dotted", 
+                           size=1.5, #thickness
+                           alpha=0.5) #transparency
+plot3
+```
+
+```{r}
+library(scales)
+
+plot4 = plot3 + scale_y_continuous(breaks=c(0, 10, 20, 30, 40, 50, 60, 70),
+                                 limits = c(0, 70), # expand = c(0, 0),
+                                 labels=scales::unit_format(suffix = '%')) 
+plot4
+
+
+```
+
+```{r}
+plot5 = plot4 + theme(panel.background = element_rect(fill = "white",
+                                                    colour = "grey50"),
+                    plot.caption = element_text(hjust = 0.3), # default was 1
+                    plot.title = element_text(hjust = 0.5))
+plot5
+```
+
+```{r}
+paste0(round(ToPlot,10),'%')
+plot6 = plot5 + geom_text(aes(y = Pct ,
+                            label = paste0(round(Pct,2), '%')),
+                        hjust=1, # if flipping 'hjust'
+                        size = 5)
+# wanna flip the plot?
+plot6 + coord_flip()
+```
+```{r}
+base = ggplot(tableFreq, aes(x=Region,Pct)) 
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Region, 
+                                   yend = Pct, 
+                                   xend = Region), color = "grey50") 
+lolliplot1 + geom_point()
+```
+
+```{r}
+tableFreq[order(tableFreq$Pct),]
+
+```
+
+```{r}
+tableFreqO=tableFreq[order(tableFreq$Pct),]
+
+
+base = ggplot(tableFreqO, aes(Region,Pct)) 
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Region, 
+                                   yend = Pct, 
+                                   xend = Region), color = "pink") 
+lolliplot2 = lolliplot1 + geom_point()
+lolliplot2 + scale_x_discrete(limits=tableFreqO$Region) # key element
+
+
+```
+
+```{r}
+tableFreqO$gap=tableFreqO$Pct-15 #reference line is set to be 25
+
+# plot the new variable
+base = ggplot(tableFreqO, aes(Region,gap)) 
+
+lolliplot1=base + geom_segment(aes(y = 0, #y=0 and ends at 25, 0 should remain, gap should be different 
+                                   x = Region, 
+                                   yend = gap, 
+                                   xend = Region), color = "gray") 
+lolliplot2 = lolliplot1 + geom_point()
+lolliplot2 + scale_x_discrete(limits=tableFreqO$Region) # key element
+```
+```{r}
+# a new column for color
+tableFreqO$PositiveGap=ifelse(tableFreqO$gap>0,T,F)
+
+# add new aesthetics 'color'
+base = ggplot(tableFreqO, aes(Region,gap,
+                              color=PositiveGap)) #change
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Region, 
+                                   yend = gap, 
+                                   xend = Region), color = "gray") 
+lolliplot2 = lolliplot1 + geom_point()
+lolliplot2 + scale_x_discrete(limits=tableFreqO$Region) # key element
+```
+```{r}
+# a new column for color
+tableFreqO$PositiveGap=ifelse(tableFreqO$gap>0,T,F)
+
+base = ggplot(tableFreqO, aes(Region,gap,color=PositiveGap,
+                              label = round(gap,3))) #  change
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Region, 
+                                   yend = gap, 
+                                   xend = Region), color = "gray") 
+lolliplot2=lolliplot1 + geom_point() 
+lolliplot3= lolliplot2 + scale_x_discrete(limits=tableFreqO$Region) 
+# annotating and moving the text on the horizontal
+lolliplot3 + geom_text(nudge_x=0.3) 
+```
+```{r}
+titleText="Percentage distribution by regions of the USA"
+sourceText="Survey Data"
+lolliplot4 = lolliplot3 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+lolliplot4
+```
+
+```
