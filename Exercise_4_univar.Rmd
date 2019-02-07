@@ -1,0 +1,70 @@
+
+
+```{r getData, eval=FALSE}
+link='https://github.com/EvansDataScience/VisualAnalytics_2_tabularData/raw/master/data/eduwa.rda'
+
+#getting the data TABLE from the file in the cloud:
+load(file=url(link))
+```
+
+
+
+<span style="color:red"> Exercise:<br> Make a histogram for the variable  FREE LUNCH, and make sure it has all the right elements, and get rid of unnecessary elements.
+</span>
+```{r}
+names(eduwa)
+```
+```{r}
+length(unique(eduwa$Free.Lunch))
+```
+```{r}
+summary(eduwa$Free.Lunch)
+```
+```{r}
+eduwa4=eduwa[complete.cases(eduwa$Free.Lunch),]
+dataHist=hist(eduwa4$Free.Lunch) 
+```
+
+```{r}
+base= ggplot(eduwa4,aes(x = Free.Lunch))  
+h1= base + geom_histogram()
+h1 
+```
+```{r}
+dataHist
+```
+```{r}
+ggplot_build(h1)$data[[1]]
+```
+```{r}
+base= ggplot(eduwa4,aes(x = Free.Lunch))  
+h1= base + geom_histogram(binwidth = 100,boundary=0) #changing width
+h1= h1 + stat_bin(binwidth = 100, aes(label=..count..), 
+                  geom = "text",boundary = 0,vjust=-0.5)
+h1
+
+
+```
+```{r}
+titleText3='Number of Free Lunches in WA Schools'
+h2 = h1 + labs(title=titleText3,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+
+h2
+```
+```{r}
+h3 = h2 + geom_hline(yintercept = 250, 
+                           linetype="dashed", 
+                           size=1.5, 
+                           alpha=0.5) 
+h3
+```
+```{r}
+h4 = h3 + theme(panel.background = element_rect(fill = "white",
+                                                    colour = "grey50"),
+                    plot.caption = element_text(hjust = 0), 
+                    plot.title = element_text(hjust = 0.5))
+h4
+```

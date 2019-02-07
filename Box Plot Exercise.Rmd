@@ -1,0 +1,58 @@
+
+
+```{r getData, eval=FALSE}
+link='https://github.com/EvansDataScience/VisualAnalytics_2_tabularData/raw/master/data/eduwa.rda'
+
+#getting the data TABLE from the file in the cloud:
+load(file=url(link))
+```
+
+
+```{r boxplot_gg, eval=FALSE}
+# boxplots do not use frequency tables
+
+# as.numeric produces turns levels of the factor into numbers
+
+#plot(mvDense,main=titleText4,col='black',xlab=NA)
+box1 = ggplot(eduwa, aes(y=as.numeric(High.Grade)), main=titleText5,col='black',xlab=NA ) 
+box1 = box1 + geom_boxplot() + coord_flip() # to show it horizontally
+
+box1 #vertical axes does not have meaning, we need to get rid off it 
+```
+```{r}
+titleText5="Boxplot summarizing the schools with the highest grade offered in WA"
+sourceText2="Survey Data"
+box2 = box1 + labs(title=titleText5,
+                     x = NULL, 
+                     y = NULL,
+                   source=sourceText2)
+box2
+```
+
+You have symmetry when the distance of those whiskers to the  box is the same, and when the thick line is in the middle of the box. You can see that the values show a negative asymmetry (tail to the left).
+
+Box plots expect a numeric value as an input, but we have an ordered categorical, so we used the _as.numeric()_ function. However, that eliminated the levels we saw in the previous bar plot; we can put the levels back in our plot:
+
+```{r boxplot_axis_labels, eval=FALSE}
+# the labels use the original ordinal levels
+ordLabels= levels(eduwa$High.Grade)
+
+box3 = box2 + scale_y_continuous(labels=ordLabels,breaks=1:15)
+box3
+```
+```{r}
+box4 = box3 + theme(panel.background = element_rect(fill = "white",
+                                                    colour = "grey50"),
+                    plot.caption = element_text(hjust = 0), # default was 1
+                    plot.title = element_text(hjust = 1))
+box4
+```
+```{r}
+box5 = box4 + theme(axis.text.y = element_blank())
+box5
+```
+```{r}
+box6 = box5 + theme(axis.ticks.y = element_blank())
+box6
+```
+
