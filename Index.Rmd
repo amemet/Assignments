@@ -3,7 +3,7 @@ title: "Exercise 1 Bivariate"
 output: html_document
 ---
 
-```{r lolliplot chart, eval=TRUE}
+```{r lolliplot chart, echo=FALSE}
 link="https://github.com/EvansDataScience/data/raw/master/crime.RData"
 load(file = url(link))
 (CrimeTotal=table(crime$crimecat,crime$Occurred.DayTime))
